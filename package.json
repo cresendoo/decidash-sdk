@@ -1,5 +1,5 @@
 {
-  "name": "@decidash/ts-sdk",
+  "name": "decidash-ts-sdk",
   "version": "0.0.0-semantic-release",
   "description": "TypeScript SDK for the decidash",
   "repository": "cresendoo/decidash-sdk",

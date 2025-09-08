@@ -43,7 +43,7 @@ jobs:
           git fetch public main 'refs/tags/*:refs/tags/*'
           git push --force --tags origin refs/remotes/public/main:refs/heads/main
 
-          jq '.name = "@decidash/ts-sdk"
+          jq '.name = "@coldbell/decidash-ts-sdk"
             | .repository = env.GITHUB_REPOSITORY
             ' package.json > _package.json
           mv _package.json package.json
