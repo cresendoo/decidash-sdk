@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check Lint
+        run: pnpm lint
+
+      - name: Build 📦
+        run: pnpm build
+
+      - name: Pre Release
+        run: |
+          git remote add public https://github.com/cresendoo/decidash-sdk
+          git fetch public main 'refs/tags/*:refs/tags/*'
+          git push --force --tags origin refs/remotes/public/main:refs/heads/main
+
+          jq '.name = "@decidash/ts-sdk"
+            | .repository = env.GITHUB_REPOSITORY
+            ' package.json > _package.json
+          mv _package.json package.json
+
+      - name: Release 🚀
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GIT_AUTHOR_NAME: ice-coldbell
+          GIT_AUTHOR_EMAIL: qkrckswhd200@naver.com
+        run: |
+          pnpm dlx semantic-release --ci
