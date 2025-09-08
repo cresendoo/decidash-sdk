@@ -1,4 +1,4 @@
-import {
+import type {
   WebsocketResponseMarketDepth,
   WebsocketResponseMarketPrice,
 } from "./types";
@@ -7,7 +7,7 @@ export type WSAPISessionConfig = {
   wsURL: string;
   WebSocketCtor?: new (
     url: string | URL,
-    protocols?: string | string[]
+    protocols?: string | string[],
   ) => WebSocket;
 };
 
@@ -27,7 +27,7 @@ export class WSAPISession {
     this.openPromise = new Promise((resolve, reject) => {
       this.ws.addEventListener("open", () => resolve());
       this.ws.addEventListener("close", (e) =>
-        reject(new Error(`WebSocket closed: ${e.reason}`))
+        reject(new Error(`WebSocket closed: ${e.reason}`)),
       );
     });
     this.ws.addEventListener("message", (e) => this.handleMessage(e));
@@ -66,18 +66,18 @@ export class WSAPISession {
   }
 
   subscribeMarketDepth(
-    market: string
+    market: string,
   ): AsyncIterable<WebsocketResponseMarketDepth> {
     return this.subscribe<WebsocketResponseMarketDepth>(
-      `market_depth:${market}`
+      `market_depth:${market}`,
     );
   }
 
   subscribeMarketPrice(
-    market: string
+    market: string,
   ): AsyncIterable<WebsocketResponseMarketPrice> {
     return this.subscribe<WebsocketResponseMarketPrice>(
-      `market_price:${market}`
+      `market_price:${market}`,
     );
   }
 

@@ -106,7 +106,7 @@ export type WebsocketSubscribeResponse = {
   };
 };
 
-export type WebsocketResponse<T = {}> = {
+export type WebsocketResponse<T = Record<string, never>> = {
   topic: string;
 } & T;
 
