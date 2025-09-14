@@ -1,5 +1,10 @@
 # Decidash TS SDK
 
+## Package Install
+```
+pnpm add @coldbell/decidash-ts-sdk
+```
+
 ## Install & Build
 ```bash
 pnpm install
