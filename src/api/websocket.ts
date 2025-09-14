@@ -45,15 +45,11 @@ export class WSAPISession {
   }
 
   private handleMessage(e: MessageEvent) {
-    const data = JSON.parse(e.data) as {
-      type: string;
-      key: string;
-      data: any;
-    };
-    const key = data.key;
-    const controllers = (this.subscriptions[key] ??= []);
+    const data = JSON.parse(e.data) as { topic: string };
+    const topic = data.topic;
+    const controllers = (this.subscriptions[topic] ??= []);
     for (const controller of controllers) {
-      controller.enqueue(data.data);
+      controller.enqueue(data);
     }
   }
 
@@ -99,7 +95,18 @@ export class WSAPISession {
         if (controllers.length === 0) {
           t.ws.send(JSON.stringify({ Unsubscribe: { topic } }));
         }
-        ctlr.close();
+        try {
+          ctlr.close();
+        } catch (error) {
+          // Ignore ERR_INVALID_STATE error (controller is already closed)
+          if (
+            error instanceof Error &&
+            error.message.includes("Controller is already closed")
+          ) {
+            return;
+          }
+          throw error;
+        }
       },
     });
     return stream;

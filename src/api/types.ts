@@ -160,13 +160,15 @@ export type WebsocketResponseMarketDepth = WebsocketResponse<{
   }
 }*/
 export type WebsocketResponseMarketPrice = WebsocketResponse<{
-  market: string;
-  oracle_px: number;
-  mark_px: number;
-  mid_px: number;
-  funding_index: number;
-  funding_rate_bps: number;
-  is_funding_positive: boolean;
-  transaction_unix_ms: number;
-  open_interest: number;
+  price: {
+    market: string;
+    oracle_px: number;
+    mark_px: number;
+    mid_px: number;
+    funding_index: number;
+    funding_rate_bps: number;
+    is_funding_positive: boolean;
+    transaction_unix_ms: number;
+    open_interest: number;
+  };
 }>;
