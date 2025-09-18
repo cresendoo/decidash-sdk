@@ -1,11 +1,23 @@
 import type { DeciDashConfig } from "@/config";
 import type {
+  Market,
   MarketCandlesticks,
   MarketCandlesticksInterval,
   MarketPrice,
   MarketTradeHistory,
 } from "./types";
 import { get } from "./utils";
+
+export const getMarket = async (args: {
+  decidashConfig: DeciDashConfig;
+}): Promise<Market[]> => {
+  const { fetchFn, tradingVM } = args.decidashConfig;
+  const response = await get<Market[]>(
+    `${tradingVM.APIURL}/api/v1/markets`,
+    fetchFn,
+  );
+  return response;
+};
 
 export const getMarketTradeHistory = async (args: {
   decidashConfig: DeciDashConfig;

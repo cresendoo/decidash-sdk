@@ -1,4 +1,97 @@
 /**
+ * @description Market
+ * @example
+  {
+      "market_addr": "0x030ab74e43dec09f38143df8d7d2aa0b639e1b43a862625a1bcf0a899f836914",
+      "market_name": "Equity.US.GLD/USD",
+      "sz_decimals": 6,
+      "px_decimals": 8,
+      "max_leverage": 10,
+      "max_open_interest": 100000.0
+  }
+*/
+export type Market = {
+  market_addr: string;
+  market_name: string;
+  sz_decimals: number;
+  px_decimals: number;
+  max_leverage: number;
+  max_open_interest: number;
+};
+
+/**
+ * @description Account overviews
+ * @example
+  {
+      "perp_equity_balance": 0.0,
+      "unrealized_pnl": 0.0,
+      "unrealized_funding_cost": -0.0,
+      "cross_margin_ratio": 0.0,
+      "maintenance_margin": -0.0,
+      "cross_account_leverage_ratio": null,
+      "volume_30d": null,
+      "total_margin": 0.0
+  }
+*/
+export type AccountOverviews = {
+  perp_equity_balance: number;
+  unrealized_pnl: number;
+  unrealized_funding_cost: number;
+  cross_margin_ratio: number;
+  maintenance_margin: number;
+  cross_account_leverage_ratio: number | null;
+  volume_30d: number | null;
+  total_margin: number;
+};
+
+/**
+ * @description User position
+ * @example
+  {
+    "market": "0xe6de4f6ec47f1bc2ab73920e9f202953e60482e1c1a90e7eef3ee45c8aafee36",
+    "user": "0x60cd94295f7dcc5ca1134542d317909ace5023bc891de280a011166b08964483",
+    "size": 10.0,
+    "user_leverage": 10,
+    "max_allowed_leverage": 10,
+    "entry_price": 4.65955151,
+    "is_isolated": false,
+    "is_deleted": false,
+    "unrealized_funding": 0.0,
+    "event_uid": 537831222624483505155866631,
+    "estimated_liquidation_price": 0.0,
+    "transaction_version": 29155889,
+    "tp_order_id": null,
+    "tp_trigger_price": null,
+    "tp_limit_price": null,
+    "sl_order_id": null,
+    "sl_trigger_price": null,
+    "sl_limit_price": null,
+    "has_fixed_sized_tpsls": true
+  }
+*/
+export type UserPosition = {
+  market: string;
+  user: string;
+  size: number;
+  user_leverage: number;
+  max_allowed_leverage: number;
+  entry_price: number;
+  is_isolated: boolean;
+  is_deleted: boolean;
+  unrealized_funding: number;
+  event_uid: number;
+  estimated_liquidation_price: number;
+  transaction_version: number;
+  tp_order_id: string | null;
+  tp_trigger_price: number | null;
+  tp_limit_price: number | null;
+  sl_order_id: string | null;
+  sl_trigger_price: number | null;
+  sl_limit_price: number | null;
+  has_fixed_sized_tpsls: boolean;
+};
+
+/**
  * @description Market trade history
  * @example
   {
