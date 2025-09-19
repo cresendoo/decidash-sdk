@@ -2,7 +2,7 @@ import {
   getMarketCandlesticks,
   getMarketPrice,
   getMarketTradeHistory,
-} from "../src/api/http";
+} from "../src/api/market";
 import { DeciDashConfig, MARKET_LIST } from "../src/config";
 
 async function main() {

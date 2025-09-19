@@ -11,9 +11,9 @@ import { get } from "./utils";
 export const getAccountOverviews = async (args: {
   decidashConfig: DeciDashConfig;
   user: string;
-}): Promise<AccountOverviews[]> => {
+}): Promise<AccountOverviews> => {
   const { fetchFn, tradingVM } = args.decidashConfig;
-  const response = await get<AccountOverviews[]>(
+  const response = await get<AccountOverviews>(
     `${tradingVM.APIURL}/api/v1/account_overviews?user=${args.user}`,
     fetchFn,
   );

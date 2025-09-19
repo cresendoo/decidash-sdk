@@ -13,6 +13,7 @@ pnpm build
 
 ## Run Example
 ```bash
+npx tsx example/account.ts
+npx tsx example/market.ts
 npx tsx example/websocket.ts
-npx tsx example/http.ts
 ```
