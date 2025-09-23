@@ -1,0 +1,2 @@
+export const DECIBEL_CONTRACT_ADDRESS =
+  "0xb8a5788314451ce4d2fbbad32e1bad88d4184b73943b7fe5166eab93cf1a5a95";

@@ -1,5 +1,6 @@
 export type DeciDashConfig = {
   tradingVM: {
+    FeePayerURL: string;
     APIURL: string;
     WSURL: string;
   };
@@ -12,6 +13,8 @@ export type DeciDashConfig = {
 export namespace DeciDashConfig {
   export const DEVNET = {
     tradingVM: {
+      FeePayerURL:
+        "https://fee-payer-dev-netna-us-central1-410192433417.us-central1.run.app",
       APIURL:
         "https://trading-api-http-dev-netna-us-central1-410192433417.us-central1.run.app",
       WSURL:
