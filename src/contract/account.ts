@@ -7,7 +7,11 @@ import type {
   Aptos,
 } from "@aptos-labs/ts-sdk";
 import { buildFeepayerTxRequest } from "./aptos";
-import { DECIBEL_CONTRACT_ADDRESS, USDC_METADATA_ADDRESS } from "./const";
+import {
+  COLLECTAL_DECIMALS,
+  DECIBEL_CONTRACT_ADDRESS,
+  USDC_METADATA_ADDRESS,
+} from "./const";
 
 export const getPrimarySubAccount = async (args: {
   aptos: Aptos;
@@ -24,7 +28,7 @@ export const getPrimarySubAccount = async (args: {
       ledgerVersion: minLedgerVersion,
     },
   });
-  return resp[0];
+  return +resp[0] / COLLECTAL_DECIMALS;
 };
 
 export const getAccountBalance = async (args: {
@@ -42,7 +46,7 @@ export const getAccountBalance = async (args: {
       ledgerVersion: minLedgerVersion,
     },
   });
-  return resp[0];
+  return +resp[0] / COLLECTAL_DECIMALS;
 };
 
 export const createNewSubAccount = async (args: {
@@ -68,9 +72,10 @@ export const depositToSubAccount = async (args: {
   decidashConfig: DeciDashConfig;
   aptos: Aptos;
   account: Account;
-  amount: bigint;
+  amount: number;
 }) => {
   const { decidashConfig, aptos, account, amount } = args;
+  const _amount = amount * COLLECTAL_DECIMALS;
   const request = await buildFeepayerTxRequest(aptos, account, {
     function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::deposit_to_subaccount`,
     functionArguments: [USDC_METADATA_ADDRESS, amount],
@@ -88,12 +93,13 @@ export const withdrawFromSubAccount = async (args: {
   aptos: Aptos;
   account: Account;
   subAccountAddress: AccountAddressInput | string;
-  amount: bigint;
+  amount: number;
 }) => {
   const { decidashConfig, aptos, account, subAccountAddress, amount } = args;
+  const _amount = amount * COLLECTAL_DECIMALS;
   const request = await buildFeepayerTxRequest(aptos, account, {
     function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::withdraw_from_subaccount`,
-    functionArguments: [subAccountAddress, USDC_METADATA_ADDRESS, amount],
+    functionArguments: [subAccountAddress, USDC_METADATA_ADDRESS, _amount],
   });
   const response = await postFeePayer({
     decidashConfig: decidashConfig,
@@ -107,12 +113,13 @@ export const testUSDCMint = async (args: {
   decidashConfig: DeciDashConfig;
   aptos: Aptos;
   account: Account;
-  amount: bigint;
+  amount: number;
 }) => {
   const { decidashConfig, aptos, account, amount } = args;
+  const _amount = amount * COLLECTAL_DECIMALS;
   const request = await buildFeepayerTxRequest(aptos, account, {
     function: `${DECIBEL_CONTRACT_ADDRESS}::usdc::mint`,
-    functionArguments: [account.accountAddress, amount],
+    functionArguments: [account.accountAddress, _amount],
   });
   const response = await postFeePayer({
     decidashConfig: decidashConfig,

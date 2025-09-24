@@ -14,6 +14,9 @@ export const buildFeepayerTxRequest = async (
     sender: signer.accountAddress,
     data: payload,
     withFeePayer: true,
+    options: {
+      expireTimestamp: Date.now() + 60_000,
+    },
   });
   const senderAuthenticator = aptos.transaction.sign({ signer, transaction });
 
