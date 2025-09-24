@@ -4,6 +4,7 @@ import {
   AptosConfig,
   Deserializer,
   Ed25519PrivateKey,
+  type HexInput,
   Network,
   PrivateKey,
   PrivateKeyVariants,
@@ -13,8 +14,11 @@ import {
 import { DeciDashConfig } from "../src/config";
 import {
   createNewSubAccount,
+  depositToSubAccount,
+  getAccountBalance,
   getPrimarySubAccount,
   testUSDCMint,
+  withdrawFromSubAccount,
 } from "../src/contract/account";
 
 async function main() {
@@ -24,7 +28,7 @@ async function main() {
   });
   const aptos = new Aptos(config);
 
-  const PRIVATE_KEY = "your-private-key";
+  const PRIVATE_KEY = process.env.PRIVATE_KEY as HexInput;
 
   const account = Account.fromPrivateKey({
     privateKey: new Ed25519PrivateKey(
@@ -34,30 +38,67 @@ async function main() {
 
   try {
     const accountAddress =
-      "0x28b8e2fe37a8d13b62b49d96d2c9ada464db0ea0520527c94bdcc6ae91cf299a"; // 사용자 계정 주소
-    const result = await getPrimarySubAccount({
+      "0x3ad47b35a05c6fb2238b00851c407c31dcb298c7c3578b014eb10ac9fd6ff883"; // 사용자 계정 주소
+
+    const result1 = await createNewSubAccount({
+      decidashConfig: DeciDashConfig.DEVNET,
+      aptos,
+      account,
+    });
+
+    console.log("New Sub Account:", result1);
+
+    const subAccountAddress = await getPrimarySubAccount({
       aptos,
       accountAddress,
     });
 
-    console.log("Primary Sub Account:", result);
+    console.log("Primary Sub Account:", subAccountAddress);
 
     const result2 = await testUSDCMint({
       decidashConfig: DeciDashConfig.DEVNET,
       aptos,
       account,
-      amount: BigInt(10_000_000), // 10 USDC
+      amount: BigInt(10_000_000_000), // 10000 USDC
     });
 
     console.log("Test USDC Mint:", result2);
 
-    // const result2 = await createNewSubAccount({
-    //   decidashConfig: DeciDashConfig.DEVNET,
-    //   aptos,
-    //   account,
-    // });
+    let balance = await getAccountBalance({
+      aptos,
+      accountAddress,
+    });
+    console.log("Account Balance:", balance);
 
-    // console.log("New Sub Account:", result2);
+    const result4 = await depositToSubAccount({
+      decidashConfig: DeciDashConfig.DEVNET,
+      aptos,
+      account,
+      amount: BigInt(10_000_000_000), // 10000 USDC
+    });
+    console.log("Deposit to Sub Account:", result4);
+
+    balance = await getAccountBalance({
+      aptos,
+      accountAddress,
+    });
+    console.log("Account Balance:", balance);
+
+    const result5 = await withdrawFromSubAccount({
+      decidashConfig: DeciDashConfig.DEVNET,
+      aptos,
+      account,
+      subAccountAddress,
+      amount: BigInt(10_000_000_000), // 10000 USDC
+    });
+
+    console.log("Withdraw from Sub Account:", result5);
+
+    balance = await getAccountBalance({
+      aptos,
+      accountAddress,
+    });
+    console.log("Account Balance:", balance);
   } catch (error) {
     console.error("Error:", error);
   }
