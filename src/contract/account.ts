@@ -28,7 +28,7 @@ export const getPrimarySubAccount = async (args: {
       ledgerVersion: minLedgerVersion,
     },
   });
-  return +resp[0] / COLLECTAL_DECIMALS;
+  return resp[0];
 };
 
 export const getAccountBalance = async (args: {

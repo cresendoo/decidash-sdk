@@ -56,7 +56,7 @@ async function main() {
       decidashConfig: DeciDashConfig.DEVNET,
       aptos,
       account,
-      amount: BigInt(10_000_000_000), // 10000 USDC
+      amount: 10000, // 10000 USDC
     });
 
     console.log("Test USDC Mint:", result2);
@@ -71,7 +71,7 @@ async function main() {
       decidashConfig: DeciDashConfig.DEVNET,
       aptos,
       account,
-      amount: BigInt(10_000_000_000), // 10000 USDC
+      amount: 10000, // 10000 USDC
     });
     console.log("Deposit to Sub Account:", result4);
 
@@ -86,7 +86,7 @@ async function main() {
       aptos,
       account,
       subAccountAddress,
-      amount: BigInt(10_000_000_000), // 10000 USDC
+      amount: 10000, // 10000 USDC
     });
 
     console.log("Withdraw from Sub Account:", result5);
