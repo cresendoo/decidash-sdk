@@ -2,12 +2,12 @@ import {
   Account,
   Aptos,
   AptosConfig,
+  Deserializer,
   Ed25519PrivateKey,
   Network,
   PrivateKey,
   PrivateKeyVariants,
   RawTransaction,
-  Deserializer,
   TransactionPayload,
 } from "@aptos-labs/ts-sdk";
 import { DeciDashConfig } from "../src/config";
@@ -44,7 +44,7 @@ async function main() {
 
     const result2 = await testUSDCMint({
       decidashConfig: DeciDashConfig.DEVNET,
-      aptos,  
+      aptos,
       account,
       amount: BigInt(10_000_000), // 10 USDC
     });

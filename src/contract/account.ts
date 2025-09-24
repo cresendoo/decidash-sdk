@@ -76,10 +76,7 @@ export const testUSDCMint = async (args: {
   const { decidashConfig, aptos, account, amount, minLedgerVersion } = args;
   const request = await buildFeepayerTxRequest(aptos, account, {
     function: `${DECIBEL_CONTRACT_ADDRESS}::usdc::mint`,
-    functionArguments: [
-      account.accountAddress,
-      amount,
-    ],
+    functionArguments: [account.accountAddress, amount],
   });
   const response = await postFeePayer({
     decidashConfig: decidashConfig,
