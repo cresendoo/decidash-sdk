@@ -1,4 +1,269 @@
 /**
+ * @description Market sentiment
+ * @example
+ * {
+ *   "long_percentage": 62.0,
+ *   "short_percentage": 38.0,
+ *   "description": "Based on total position value"
+ * }
+ */
+export type MarketSentiment = {
+  long_percentage: number;
+  short_percentage: number;
+};
+
+/**
+ * @description Top performer main position
+ * @example
+ * {
+ *   "asset": "BTC",
+ *   "roi": "Infinity%",
+ *   "description": "Highest 24h return on investment"
+ * }
+ */
+export type TopPerformerMainPosition = {
+  asset: string;
+  roi: string;
+};
+
+/**
+ * @description Asset concentration
+ * @example
+ * {
+ *   "highest_oi": {
+ *     "asset": "BTC",
+ *     "amount": 906700000
+ *   },
+ * }
+ */
+export type AssetConcentration = {
+  highest_oi: {
+    asset: string;
+    amount: number;
+  };
+  most_traded: {
+    asset: string;
+    traders: number;
+  };
+  total_monitored: number;
+};
+
+/**
+ * @description Trader profitability
+ * @example
+ * {
+ *   "profitable_percentage": 27.4,
+ *   "profitable_count": 274,
+ *   "total_traders": 1000,
+ *   "avg_daily_pnl": 4800
+ * }
+ */
+export type TraderProfitability = {
+  profitable_percentage: number;
+  profitable_count: number;
+  total_traders: number;
+  avg_daily_pnl: number;
+};
+
+/**
+ * @description Dashboard summary
+ * @example
+ * {
+ *   "market_sentiment": {
+ *     "long_percentage": 62.0,
+ *     "short_percentage": 38.0,
+ *     "description": "Based on total position value"
+ *   },
+ *   "top_performer_main_position": {
+ *     "asset": "BTC",
+ *     "roi": "Infinity%",
+ *     "description": "Highest 24h return on investment"
+ *   },
+ *   "asset_concentration": {
+ *     "highest_oi": {
+ *       "asset": "BTC",
+ *       "amount": 906700000
+ *     },
+ *     "most_traded": {
+ *       "asset": "ETH",
+ *       "traders": 89
+ *     },
+ *     "total_monitored": 2250000000
+ *   },
+ *   "trader_profitability": {
+ *     "profitable_percentage": 27.4,
+ *     "profitable_count": 274,
+ *     "total_traders": 1000,
+ *     "avg_daily_pnl": 4800
+ *   }
+ * }
+ */
+export type DashboardSummary = {
+  market_sentiment: MarketSentiment;
+  top_performer_main_position: TopPerformerMainPosition;
+  asset_concentration: AssetConcentration;
+  trader_profitability: TraderProfitability;
+};
+
+/**
+ * @description PnL data
+ * @example
+ * {
+ *   "amount": 1000,
+ *   "percentage": 10
+ * }
+ */
+export type PnLData = {
+  amount: number;
+  percentage: number;
+};
+
+/**
+ * @description Direction bias
+ * @example
+ * {
+ *   "long_percentage": 62.0,
+ *   "short_percentage": 38.0
+ * }
+ */
+export type DirectionBias = {
+  long_percentage: number;
+  short_percentage: number;
+};
+
+/**
+ * @description Main position
+ * @example
+ * {
+ *   "type": "LONG",
+ *   "asset": "BTC",
+ *   "amount": 1000
+ * }
+ */
+export type MainPosition = {
+  type: "LONG" | "SHORT";
+  asset: string;
+  amount: number;
+};
+
+/**
+ * @description Trader
+ * @example
+ * {
+ *   "address": "0x1234567890",
+ *   "avatar": "https://example.com/avatar.png",
+ *   "is_starred": true,
+ *   "perp_equity": 1000,
+ *   "main_position": {
+ *     "type": "LONG",
+ *     "asset": "BTC",
+ *     "amount": 1000
+ *   },
+ *   "direction_bias": {
+ *     "long_percentage": 62.0,
+ *     "short_percentage": 38.0
+ *   },
+ *   "daily_pnl": {
+ *     "amount": 1000,
+ *     "percentage": 10
+ *   }
+ *   "weekly_pnl": {
+ *     "amount": 1000,
+ *     "percentage": 10
+ *   },
+ *   "monthly_pnl": {
+ *     "amount": 1000,
+ *     "percentage": 10
+ *   },
+ *   "all_time_pnl": {
+ *     "amount": 1000,
+ *     "percentage": 10
+ *   }
+ * }
+ */
+export type Trader = {
+  address: string;
+  avatar: string;
+  is_starred: boolean;
+  perp_equity: number;
+  main_position: MainPosition | null;
+  direction_bias: DirectionBias;
+  daily_pnl: PnLData;
+  weekly_pnl: PnLData;
+  monthly_pnl: PnLData;
+  all_time_pnl: PnLData;
+};
+
+/**
+ * @description Traders response
+ * @example
+ * {
+ *   "traders": [
+ *     {
+ *       "address": "0x1234567890",
+ *       "avatar": "https://example.com/avatar.png",
+ *     }
+ *   ]
+ * }
+ */
+export type TradersResponse = {
+  traders: Trader[];
+  total: number;
+  page: number;
+  per_page: number;
+  total_pages: number;
+};
+
+/**
+ * @description Trader stats
+ * @example
+ * {
+ *   "total_traders": 1000,
+ *   "total_equity": 1000000,
+ *   "profitable_count": 274,
+ *   "profitable_percentage": 27.4,
+ *   "avg_daily_pnl": 4800,
+ *   "total_daily_pnl": 4800000
+ * }
+ */
+export type TraderStats = {
+  total_traders: number;
+  total_equity: number;
+  profitable_count: number;
+  profitable_percentage: number;
+  avg_daily_pnl: number;
+  total_daily_pnl: number;
+};
+
+/**
+ * @description Asset stats entry
+ * @example
+ * {
+ *   "asset": "BTC",
+ *   "total_traders": 1000,
+ *   "total_oi": 1000000,
+ *   "avg_position": 1000,
+ *   "long_count": 274,
+ *   "short_count": 38
+ * }
+ */
+export type AssetStatsEntry = {
+  asset: string;
+  total_traders: number;
+  total_oi: number;
+  avg_position: number;
+  long_count: number;
+  short_count: number;
+};
+
+export type AssetStats = Record<string, AssetStatsEntry>;
+
+export type ApiResponse<T> = {
+  data: T;
+  success?: boolean;
+};
+
+/**
  * @description Market
  * @example
   {

@@ -17,4 +17,5 @@ npx tsx example/account.ts
 npx tsx example/contract.ts
 npx tsx example/market.ts
 npx tsx example/websocket.ts
+npx tsx example/traders.ts
 ```
