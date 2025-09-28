@@ -357,7 +357,86 @@ export type UserPosition = {
 };
 
 /**
- * @description Market trade history
+ * @description Open order entry
+ * @example
+  {
+    "parent": "0x123...",
+    "market": "0x456...",
+    "order_id": "order_789",
+    "client_order_id": "maker_1",
+    "status": "Open",
+    "orig_size": 100.5,
+    "remaining_size": 50.25,
+    "size_delta": 50.25,
+    "price": 1500.75,
+    "is_buy": true,
+    "is_reduce_only": false,
+    "details": "order_details_string",
+    "trigger_condition": "",
+    "tp_order_id": "order_tp_123",
+    "tp_trigger_price": 1600000000,
+    "tp_limit_price": 1599000000,
+    "sl_order_id": "order_sl_456",
+    "sl_trigger_price": 1400000000,
+    "sl_limit_price": 1401000000,
+    "transaction_version": 12345,
+    "unix_ms": 1678886400000
+  }
+*/
+export type OpenOrder = {
+  parent: string;
+  market: string;
+  order_id: string;
+  client_order_id?: string | null;
+  status: string;
+  orig_size: number;
+  remaining_size: number;
+  size_delta: number;
+  price: number;
+  is_buy: boolean;
+  is_reduce_only: boolean;
+  details: string;
+  trigger_condition: string;
+  tp_order_id: string | null;
+  tp_trigger_price: number | null;
+  tp_limit_price: number | null;
+  sl_order_id: string | null;
+  sl_trigger_price: number | null;
+  sl_limit_price: number | null;
+  transaction_version: number;
+  unix_ms: number;
+};
+
+/**
+ * @description Order detail response
+ * @example
+  {
+    "parent": "0x123...",
+    "market": "0x456...",
+    "order_id": "order_789",
+    "status": "Open",
+    "orig_size": 100.5,
+    "remaining_size": 50.25,
+    "size_delta": 50.25,
+    "price": 1500.75,
+    "is_buy": true,
+    "is_reduce_only": false,
+    "details": "order_details_string",
+    "trigger_condition": "Price above 1600.00",
+    "tp_order_id": "order_tp_123",
+    "tp_trigger_price": 1600000000,
+    "tp_limit_price": 1599000000,
+    "sl_order_id": "order_sl_456",
+    "sl_trigger_price": 1400000000,
+    "sl_limit_price": 1401000000,
+    "transaction_version": 12345,
+    "unix_ms": 1678886400000
+  }
+*/
+export type OrderDetail = OpenOrder;
+
+/**
+ * @description Trade history entry
  * @example
   {
     "account": "0x47182c30c91a9d43bd6e528b25af98d032f1494b8c5c19c869a997f056d19ec5",
@@ -392,6 +471,89 @@ export type MarketTradeHistory = {
 };
 
 /**
+ * @description Funding rate history entry
+ * @example
+  {
+    "market": "0x123...",
+    "action": "CloseLong",
+    "size": 100.5,
+    "is_funding_positive": false,
+    "realized_funding_amount": -10.25,
+    "is_rebate": false,
+    "fee_amount": 2.5,
+    "transaction_unix_ms": 1678886400000
+  }
+*/
+export type FundingRateHistoryEntry = {
+  market: string;
+  action: string;
+  size: number;
+  is_funding_positive: boolean;
+  realized_funding_amount: number;
+  is_rebate: boolean;
+  fee_amount: number;
+  transaction_unix_ms: number;
+};
+
+/**
+ * @description Portfolio chart point
+ * @example
+  {
+    "timestamp": 1678886400000,
+    "data_points": 10250.75
+  }
+*/
+export type PortfolioChartRange =
+  | "1d"
+  | "7d"
+  | "30d"
+  | "90d"
+  | "180d"
+  | "365d"
+  | "all";
+
+export type PortfolioChartDataType = "pnl" | "account_value";
+
+export type PortfolioChartPoint = {
+  timestamp: number;
+  data_points: number;
+};
+
+/**
+ * @description Leaderboard item
+ * @example
+  {
+    "rank": 1,
+    "account": "0xabc...",
+    "account_value": 100000.5,
+    "realized_pnl": 5000.25,
+    "roi": 0.0525,
+    "volume": 1000000
+  }
+*/
+export type LeaderboardItem = {
+  rank: number;
+  account: string;
+  account_value: number;
+  realized_pnl: number;
+  roi: number;
+  volume: number;
+};
+
+export type LeaderboardResponse = {
+  items: LeaderboardItem[];
+  total_count: number;
+};
+
+export type LeaderboardSortKey =
+  | "account_value"
+  | "realized_pnl"
+  | "roi"
+  | "volume";
+
+export type SortDirection = "ASC" | "DESC";
+
+/**
  * @description Market price
  * @example
   {
@@ -419,7 +581,62 @@ export type MarketPrice = {
   open_interest: number;
 };
 
-export type MarketCandlesticksInterval = "1m" | "15m" | "1h" | "4h" | "1d";
+/**
+ * @description Asset context snapshot
+ * @example
+ * {
+ *   "market": "APT-USD",
+ *   "volume_24h": 10000.5,
+ *   "funding_index": 1000000000000000000,
+ *   "open_interest": 5000.25,
+ *   "mark_price": 1500.75,
+ *   "mid_price": 1500.5,
+ *   "oracle_price": 1500.25,
+ *   "previous_day_price": 1480.0,
+ *   "price_change_pct_24h": 1.39,
+ *   "price_history": [1480.0, 1485.5, 1490.75]
+ * }
+ */
+export type AssetContext = {
+  market: string;
+  volume_24h: number;
+  funding_index: number;
+  open_interest: number;
+  mark_price: number;
+  mid_price: number;
+  oracle_price: number;
+  previous_day_price: number;
+  price_change_pct_24h: number;
+  price_history: number[];
+};
+
+/**
+ * @description DEX registration info
+ * @example
+ * {
+ *   "dex_addr": "0x789...",
+ *   "collateral_name": "USDC",
+ *   "collateral_address": "0xdef...",
+ *   "collateral_balance_decimals": 6
+ * }
+ */
+export type DexRegistration = {
+  dex_addr: string;
+  collateral_name: string;
+  collateral_address: string;
+  collateral_balance_decimals: number;
+};
+
+export type MarketCandlesticksInterval =
+  | "1m"
+  | "5m"
+  | "15m"
+  | "30m"
+  | "1h"
+  | "2h"
+  | "4h"
+  | "8h"
+  | "1d";
 
 /** 
  * @description Market Candlesticks
@@ -444,6 +661,25 @@ export type MarketCandlesticks = {
   c: number; // Close price
   v: number; // Volume
   i: MarketCandlesticksInterval; // Interval
+};
+
+/**
+ * @description Order book depth snapshot
+ * @example
+ * {
+ *   "bids": [
+ *     { price: 1500000, size: 1000 },
+ *     { price: 1499000, size: 2000 }
+ *   ],
+ *   "asks": [
+ *     { price: 1501000, size: 1500 },
+ *     { price: 1502000, size: 3000 }
+ *   ]
+ * }
+ */
+export type MarketDepth = {
+  bids: { price: number; size: number }[];
+  asks: { price: number; size: number }[];
 };
 
 /**
@@ -529,4 +765,41 @@ export type WebsocketResponseMarketPrice = WebsocketResponse<{
     transaction_unix_ms: number;
     open_interest: number;
   };
+}>;
+
+export type WebsocketResponseAllMarketPrices = WebsocketResponse<{
+  prices: MarketPrice[];
+}>;
+
+export type WebsocketResponseMarketCandlestick = WebsocketResponse<{
+  candle: MarketCandlesticks;
+}>;
+
+export type WebsocketResponseUserOpenOrders = WebsocketResponse<{
+  orders: OpenOrder[];
+}>;
+
+export type WebsocketResponseUserOrderHistory = WebsocketResponseUserOpenOrders;
+
+export type WebsocketResponseUserPositions = WebsocketResponse<{
+  positions: UserPosition[];
+}>;
+
+export type WebsocketResponseUsersWithPositions = WebsocketResponse<{
+  users: string[];
+}>;
+
+export type WebsocketResponseUserTradeHistory = WebsocketResponse<{
+  trades: MarketTradeHistory[];
+}>;
+
+export type WebsocketResponseMarketTradeHistory =
+  WebsocketResponseUserTradeHistory;
+
+export type WebsocketResponseUserFundingRateHistory = WebsocketResponse<{
+  funding_rates: FundingRateHistoryEntry[];
+}>;
+
+export type WebsocketResponseAccountOverview = WebsocketResponse<{
+  account_overview: AccountOverviews;
 }>;

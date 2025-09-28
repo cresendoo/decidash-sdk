@@ -53,6 +53,41 @@ async function main() {
 
       if (priceCount >= 3) break;
     }
+
+    console.log("\n🌎 All Market Prices 구독 시작...");
+    const allMarketPricesStream = wsSession.subscribeAllMarketPrices();
+
+    let allPriceCount = 0;
+    for await (const payload of allMarketPricesStream) {
+      console.log(`\n🌐 All Market Prices #${++allPriceCount}:`);
+      console.log(`  페이로드 내 마켓 수: ${payload.prices.length}`);
+      if (payload.prices[0]) {
+        console.log(
+          `  첫 번째 마켓: ${payload.prices[0].market} | Mark: ${payload.prices[0].mark_px.toFixed(6)}`,
+        );
+      }
+
+      if (allPriceCount >= 2) break;
+    }
+
+    console.log("\n🕯️ Market Candlestick (1m) 구독 시작...");
+    const marketCandleStream = wsSession.subscribeMarketCandlestick(
+      aptUsdMarket,
+      "1m",
+    );
+
+    let candleCount = 0;
+    for await (const candlePayload of marketCandleStream) {
+      console.log(`\n🕯️ Candle Update #${++candleCount}:`);
+      console.log(
+        `  기간: ${new Date(candlePayload.candle.t).toISOString()} ~ ${new Date(candlePayload.candle.T).toISOString()}`,
+      );
+      console.log(
+        `  OHLC: ${candlePayload.candle.o}, ${candlePayload.candle.h}, ${candlePayload.candle.l}, ${candlePayload.candle.c}`,
+      );
+
+      if (candleCount >= 2) break;
+    }
   } catch (error) {
     console.error("❌ WebSocket 에러:", error);
   } finally {

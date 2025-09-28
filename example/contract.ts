@@ -40,7 +40,7 @@ async function main() {
     const result1 = await createNewSubAccount({
       decidashConfig: DeciDashConfig.DEVNET,
       aptos,
-      account,
+      signer: account,
     });
 
     console.log("New Sub Account:", result1);
@@ -55,7 +55,7 @@ async function main() {
     const result2 = await testUSDCMint({
       decidashConfig: DeciDashConfig.DEVNET,
       aptos,
-      account,
+      signer: account,
       amount: 10000, // 10000 USDC
     });
 
@@ -70,7 +70,7 @@ async function main() {
     const result4 = await depositToSubAccount({
       decidashConfig: DeciDashConfig.DEVNET,
       aptos,
-      account,
+      signer: account,
       amount: 10000, // 10000 USDC
     });
     console.log("Deposit to Sub Account:", result4);
@@ -84,7 +84,7 @@ async function main() {
     const result5 = await withdrawFromSubAccount({
       decidashConfig: DeciDashConfig.DEVNET,
       aptos,
-      account,
+      signer: account,
       subAccountAddress,
       amount: 10000, // 10000 USDC
     });

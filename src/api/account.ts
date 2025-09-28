@@ -1,5 +1,15 @@
 import type { DeciDashConfig } from "@/config";
-import type { AccountOverviews, UserPosition } from "./types";
+import type {
+  AccountOverviews,
+  FundingRateHistoryEntry,
+  MarketTradeHistory,
+  OpenOrder,
+  OrderDetail,
+  PortfolioChartDataType,
+  PortfolioChartPoint,
+  PortfolioChartRange,
+  UserPosition,
+} from "./types";
 import { get } from "./utils";
 
 /**
@@ -13,11 +23,11 @@ export const getAccountOverviews = async (args: {
   user: string;
 }): Promise<AccountOverviews> => {
   const { fetchFn, tradingVM } = args.decidashConfig;
-  const response = await get<AccountOverviews>(
-    `${tradingVM.APIURL}/api/v1/account_overviews?user=${args.user}`,
+  const query = new URLSearchParams({ user: args.user }).toString();
+  return get<AccountOverviews>(
+    `${tradingVM.APIURL}/api/v1/account_overviews?${query}`,
     fetchFn,
   );
-  return response;
 };
 
 /**
@@ -52,4 +62,82 @@ export const getAccountPositions = async (args: {
     fetchFn,
   );
   return response;
+};
+
+export const getUserOpenOrders = async (args: {
+  decidashConfig: DeciDashConfig;
+  user: string;
+}): Promise<OpenOrder[]> => {
+  const { fetchFn, tradingVM } = args.decidashConfig;
+  const query = new URLSearchParams({ user: args.user }).toString();
+  return get<OpenOrder[]>(
+    `${tradingVM.APIURL}/api/v1/open_orders?${query}`,
+    fetchFn,
+  );
+};
+
+export const getOrderDetail = async (args: {
+  decidashConfig: DeciDashConfig;
+  orderId: string;
+  marketAddress: string;
+}): Promise<OrderDetail> => {
+  const { fetchFn, tradingVM } = args.decidashConfig;
+  const query = new URLSearchParams({
+    order_id: args.orderId,
+    market_address: args.marketAddress,
+  }).toString();
+  return get<OrderDetail>(
+    `${tradingVM.APIURL}/api/v1/orders?${query}`,
+    fetchFn,
+  );
+};
+
+export const getUserTradeHistory = async (args: {
+  decidashConfig: DeciDashConfig;
+  user: string;
+  limit?: number;
+}): Promise<MarketTradeHistory[]> => {
+  const { fetchFn, tradingVM } = args.decidashConfig;
+  const query = new URLSearchParams({
+    user: args.user,
+    limit: String(args.limit ?? 10),
+  }).toString();
+  return get<MarketTradeHistory[]>(
+    `${tradingVM.APIURL}/api/v1/trade_history?${query}`,
+    fetchFn,
+  );
+};
+
+export const getUserFundingRateHistory = async (args: {
+  decidashConfig: DeciDashConfig;
+  user: string;
+  limit?: number;
+}): Promise<FundingRateHistoryEntry[]> => {
+  const { fetchFn, tradingVM } = args.decidashConfig;
+  const query = new URLSearchParams({
+    user: args.user,
+    limit: String(args.limit ?? 10),
+  }).toString();
+  return get<FundingRateHistoryEntry[]>(
+    `${tradingVM.APIURL}/api/v1/funding_rate_history?${query}`,
+    fetchFn,
+  );
+};
+
+export const getPortfolioChart = async (args: {
+  decidashConfig: DeciDashConfig;
+  user: string;
+  range: PortfolioChartRange;
+  dataType: PortfolioChartDataType;
+}): Promise<PortfolioChartPoint[]> => {
+  const { fetchFn, tradingVM } = args.decidashConfig;
+  const query = new URLSearchParams({
+    user: args.user,
+    range: args.range,
+    data_type: args.dataType,
+  }).toString();
+  return get<PortfolioChartPoint[]>(
+    `${tradingVM.APIURL}/api/v1/portfolio_chart?${query}`,
+    fetchFn,
+  );
 };

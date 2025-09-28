@@ -1,4 +1,12 @@
-import { getAccountOverviews, getAccountPositions } from "../src/api/account";
+import {
+  getAccountOverviews,
+  getAccountPositions,
+  getOrderDetail,
+  getPortfolioChart,
+  getUserFundingRateHistory,
+  getUserOpenOrders,
+  getUserTradeHistory,
+} from "../src/api/account";
 import { DeciDashConfig, MARKET_LIST } from "../src/config";
 
 async function main() {
@@ -103,6 +111,74 @@ async function main() {
       );
       console.log(
         `     Leverage: ${position.user_leverage}x | PnL: $${position.unrealized_funding.toFixed(6)}`,
+      );
+    });
+
+    // 4. Open Orders 조회
+    console.log("\n📝 User Open Orders 조회 중...");
+    const openOrders = await getUserOpenOrders({
+      decidashConfig: config,
+      user: userAddress,
+    });
+    console.log(`✅ ${openOrders.length}개의 오픈 주문 조회 완료`);
+    openOrders.slice(0, 3).forEach((order, index) => {
+      console.log(
+        `  ${index + 1}. ${order.order_id} | Market: ${order.market} | Size: ${order.orig_size}`,
+      );
+      console.log(
+        `     Side: ${order.is_buy ? "BUY" : "SELL"} | Price: ${order.price} | Status: ${order.status}`,
+      );
+    });
+
+    if (openOrders[0]) {
+      console.log("\n🔍 첫 번째 주문 상세 조회...");
+      const orderDetail = await getOrderDetail({
+        decidashConfig: config,
+        orderId: openOrders[0].order_id,
+        marketAddress: openOrders[0].market,
+      });
+      console.log(
+        `  Order ${orderDetail.order_id} (TP: ${orderDetail.tp_trigger_price ?? "-"}, SL: ${orderDetail.sl_trigger_price ?? "-"})`,
+      );
+    }
+
+    // 5. User Trade History 조회
+    console.log("\n📜 User Trade History 조회 중...");
+    const tradeHistory = await getUserTradeHistory({
+      decidashConfig: config,
+      user: userAddress,
+      limit: 5,
+    });
+    tradeHistory.forEach((trade, index) => {
+      console.log(
+        `  ${index + 1}. ${trade.action} ${trade.size}@${trade.price} | PnL: ${trade.realized_pnl_amount}`,
+      );
+    });
+
+    // 6. Funding Rate History 조회
+    console.log("\n💸 Funding Rate History 조회 중...");
+    const fundingHistory = await getUserFundingRateHistory({
+      decidashConfig: config,
+      user: userAddress,
+      limit: 5,
+    });
+    fundingHistory.forEach((funding, index) => {
+      console.log(
+        `  ${index + 1}. ${funding.market} | Funding: ${funding.realized_funding_amount} | Positive: ${funding.is_funding_positive}`,
+      );
+    });
+
+    // 7. Portfolio Chart 조회
+    console.log("\n📉 Portfolio Chart (7d, account_value) 조회 중...");
+    const portfolioChart = await getPortfolioChart({
+      decidashConfig: config,
+      user: userAddress,
+      range: "7d",
+      dataType: "account_value",
+    });
+    portfolioChart.slice(-5).forEach((point) => {
+      console.log(
+        `  ${new Date(point.timestamp).toISOString()} -> ${point.data_points}`,
       );
     });
   } catch (error) {
