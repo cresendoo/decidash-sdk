@@ -15,10 +15,10 @@ import {
 
 export const getPrimarySubAccount = async (args: {
   aptos: Aptos;
-  accountAddress: AccountAddressInput;
+  primaryAddress: AccountAddressInput;
   minLedgerVersion?: AnyNumber;
 }) => {
-  const { aptos, accountAddress, minLedgerVersion } = args;
+  const { aptos, primaryAddress: accountAddress, minLedgerVersion } = args;
   const resp = await aptos.view<[string]>({
     payload: {
       function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::primary_subaccount`,
@@ -33,10 +33,10 @@ export const getPrimarySubAccount = async (args: {
 
 export const getAccountBalance = async (args: {
   aptos: Aptos;
-  accountAddress: AccountAddressInput;
+  subAccountAddress: AccountAddressInput;
   minLedgerVersion?: AnyNumber;
 }) => {
-  const { aptos, accountAddress, minLedgerVersion } = args;
+  const { aptos, subAccountAddress: accountAddress, minLedgerVersion } = args;
   const resp = await aptos.view<[number]>({
     payload: {
       function: `${DECIBEL_CONTRACT_ADDRESS}::perp_engine::get_account_balance_fungible`,
@@ -52,9 +52,9 @@ export const getAccountBalance = async (args: {
 export const createNewSubAccount = async (args: {
   decidashConfig: DeciDashConfig;
   aptos: Aptos;
-  signer: Account;
+  primaryAccount: Account;
 }) => {
-  const { decidashConfig, aptos, signer: account } = args;
+  const { decidashConfig, aptos, primaryAccount: account } = args;
   const request = await buildFeepayerTxRequest(aptos, account, {
     function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::create_new_subaccount`,
     functionArguments: [],
@@ -68,7 +68,31 @@ export const createNewSubAccount = async (args: {
   return response;
 };
 
-export const depositToSubAccount = async (args: {
+export const deposit = async (args: {
+  decidashConfig: DeciDashConfig;
+  aptos: Aptos;
+  signer: Account;
+  amount: number;
+  subAccountAddress?: AccountAddressInput;
+}) => {
+  if (args.subAccountAddress) {
+    return depositToSubAccountAt({
+      decidashConfig: args.decidashConfig,
+      aptos: args.aptos,
+      primaryAccount: args.signer,
+      subAccountAddress: args.subAccountAddress,
+      amount: args.amount,
+    });
+  }
+  return depositToSubAccount({
+    decidashConfig: args.decidashConfig,
+    aptos: args.aptos,
+    signer: args.signer,
+    amount: args.amount,
+  });
+};
+
+const depositToSubAccount = async (args: {
   decidashConfig: DeciDashConfig;
   aptos: Aptos;
   signer: Account;
@@ -78,7 +102,7 @@ export const depositToSubAccount = async (args: {
   const _amount = amount * COLLECTAL_DECIMALS;
   const request = await buildFeepayerTxRequest(aptos, account, {
     function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::deposit_to_subaccount`,
-    functionArguments: [USDC_METADATA_ADDRESS, amount],
+    functionArguments: [USDC_METADATA_ADDRESS, _amount],
   });
   const response = await postFeePayer({
     decidashConfig: decidashConfig,
@@ -88,7 +112,28 @@ export const depositToSubAccount = async (args: {
   return response;
 };
 
-export const withdrawFromSubAccount = async (args: {
+const depositToSubAccountAt = async (args: {
+  decidashConfig: DeciDashConfig;
+  aptos: Aptos;
+  primaryAccount: Account;
+  subAccountAddress: AccountAddressInput;
+  amount: number;
+}) => {
+  const { decidashConfig, aptos, primaryAccount: account, subAccountAddress, amount } = args;
+  const _amount = amount * COLLECTAL_DECIMALS;
+  const request = await buildFeepayerTxRequest(aptos, account, {
+    function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::deposit_to_subaccount_at`,
+    functionArguments: [subAccountAddress, USDC_METADATA_ADDRESS, _amount],
+  });
+  const response = await postFeePayer({
+    decidashConfig: decidashConfig,
+    signature: request.signature,
+    transaction: request.transaction,
+  });
+  return response;
+};
+
+export const withdraw = async (args: {
   decidashConfig: DeciDashConfig;
   aptos: Aptos;
   signer: Account;
