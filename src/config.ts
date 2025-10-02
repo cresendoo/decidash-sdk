@@ -13,7 +13,7 @@ export type DeciDashConfig = {
 
 export namespace DeciDashConfig {
   export const DEVNET = {
-    DeciDash: "http://coldbell.iptime.org:8081/api/v1",
+    DeciDash: "https://api.decidash.trade/api/v1",
     tradingVM: {
       FeePayerURL:
         "https://fee-payer-dev-netna-us-central1-410192433417.us-central1.run.app",

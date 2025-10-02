@@ -6,6 +6,7 @@ import type {
   AccountAddressInput,
   AnyNumber,
   Aptos,
+  CommittedTransactionResponse,
 } from "@aptos-labs/ts-sdk";
 import { buildFeepayerTxRequest } from "./aptos";
 import {
@@ -54,7 +55,7 @@ export const createNewSubAccount = async (args: {
   decidashConfig: DeciDashConfig;
   aptos: Aptos;
   primaryAccount: Account;
-}): Promise<PostFeePayerResponse> => {
+}): Promise<CommittedTransactionResponse> => {
   const { decidashConfig, aptos, primaryAccount: account } = args;
   const request = await buildFeepayerTxRequest(aptos, account, {
     function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::create_new_subaccount`,
@@ -63,9 +64,11 @@ export const createNewSubAccount = async (args: {
 
   const response = await postFeePayer({
     decidashConfig: decidashConfig,
+    aptos: aptos,
     signature: request.signature,
     transaction: request.transaction,
   });
+
   return response;
 };
 
@@ -75,7 +78,7 @@ export const deposit = async (args: {
   signer: Account;
   amount: number;
   subAccountAddress?: AccountAddressInput;
-}): Promise<PostFeePayerResponse> => {
+}): Promise<CommittedTransactionResponse> => {
   if (args.subAccountAddress) {
     return depositToSubAccountAt({
       decidashConfig: args.decidashConfig,
@@ -98,7 +101,7 @@ const depositToSubAccount = async (args: {
   aptos: Aptos;
   signer: Account;
   amount: number;
-}): Promise<PostFeePayerResponse> => {
+}): Promise<CommittedTransactionResponse> => {
   const { decidashConfig, aptos, signer: account, amount } = args;
   const _amount = amount * COLLECTAL_DECIMALS;
   const request = await buildFeepayerTxRequest(aptos, account, {
@@ -107,6 +110,7 @@ const depositToSubAccount = async (args: {
   });
   const response = await postFeePayer({
     decidashConfig: decidashConfig,
+    aptos: aptos,
     signature: request.signature,
     transaction: request.transaction,
   });
@@ -119,7 +123,7 @@ const depositToSubAccountAt = async (args: {
   primaryAccount: Account;
   subAccountAddress: AccountAddressInput;
   amount: number;
-}): Promise<PostFeePayerResponse> => {
+}): Promise<CommittedTransactionResponse> => {
   const {
     decidashConfig,
     aptos,
@@ -134,6 +138,7 @@ const depositToSubAccountAt = async (args: {
   });
   const response = await postFeePayer({
     decidashConfig: decidashConfig,
+    aptos: aptos,
     signature: request.signature,
     transaction: request.transaction,
   });
@@ -146,7 +151,7 @@ export const withdraw = async (args: {
   signer: Account;
   subAccountAddress: AccountAddressInput | string;
   amount: number;
-}): Promise<PostFeePayerResponse> => {
+}): Promise<CommittedTransactionResponse> => {
   const {
     decidashConfig,
     aptos,
@@ -161,6 +166,7 @@ export const withdraw = async (args: {
   });
   const response = await postFeePayer({
     decidashConfig: decidashConfig,
+    aptos: aptos,
     signature: request.signature,
     transaction: request.transaction,
   });
@@ -172,7 +178,7 @@ export const testUSDCMint = async (args: {
   aptos: Aptos;
   primaryAccount: Account;
   amount: number;
-}): Promise<PostFeePayerResponse> => {
+}): Promise<CommittedTransactionResponse> => {
   const { decidashConfig, aptos, primaryAccount: account, amount } = args;
   const _amount = amount * COLLECTAL_DECIMALS;
   const request = await buildFeepayerTxRequest(aptos, account, {
@@ -181,6 +187,7 @@ export const testUSDCMint = async (args: {
   });
   const response = await postFeePayer({
     decidashConfig: decidashConfig,
+    aptos: aptos,
     signature: request.signature,
     transaction: request.transaction,
   });
