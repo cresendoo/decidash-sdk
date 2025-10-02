@@ -21,7 +21,7 @@ export const buildFeepayerTxRequest = async (
   const senderAuthenticator = aptos.transaction.sign({ signer, transaction });
 
   return {
-    transaction: Array.from(transaction.bcsToBytes()),
+    transaction: Array.from(transaction.rawTransaction.bcsToBytes()),
     signature: Array.from(senderAuthenticator.bcsToBytes()),
   };
 };

@@ -8,6 +8,7 @@ import {
   PrivateKey,
   PrivateKeyVariants,
 } from "@aptos-labs/ts-sdk";
+import { config } from "dotenv";
 import { DeciDashConfig } from "../src/config";
 import {
   createNewSubAccount,
@@ -18,11 +19,15 @@ import {
   withdrawFromSubAccount,
 } from "../src/contract/account";
 
+config();
+
 async function main() {
   const config = new AptosConfig({
     network: Network.DEVNET,
     fullnode: DeciDashConfig.DEVNET.node.HTTPURL,
   });
+  const decidashConfig = DeciDashConfig.DEVNET;
+
   const aptos = new Aptos(config);
 
   const PRIVATE_KEY = process.env.PRIVATE_KEY as HexInput;
@@ -32,13 +37,11 @@ async function main() {
       PrivateKey.formatPrivateKey(PRIVATE_KEY, PrivateKeyVariants.Ed25519),
     ),
   });
+  const accountAddress = account.accountAddress;
 
   try {
-    const accountAddress =
-      "0x3ad47b35a05c6fb2238b00851c407c31dcb298c7c3578b014eb10ac9fd6ff883"; // 사용자 계정 주소
-
     const result1 = await createNewSubAccount({
-      decidashConfig: DeciDashConfig.DEVNET,
+      decidashConfig,
       aptos,
       signer: account,
     });
@@ -53,7 +56,7 @@ async function main() {
     console.log("Primary Sub Account:", subAccountAddress);
 
     const result2 = await testUSDCMint({
-      decidashConfig: DeciDashConfig.DEVNET,
+      decidashConfig,
       aptos,
       signer: account,
       amount: 10000, // 10000 USDC
@@ -68,7 +71,7 @@ async function main() {
     console.log("Account Balance:", balance);
 
     const result4 = await depositToSubAccount({
-      decidashConfig: DeciDashConfig.DEVNET,
+      decidashConfig,
       aptos,
       signer: account,
       amount: 10000, // 10000 USDC
@@ -82,7 +85,7 @@ async function main() {
     console.log("Account Balance:", balance);
 
     const result5 = await withdrawFromSubAccount({
-      decidashConfig: DeciDashConfig.DEVNET,
+      decidashConfig,
       aptos,
       signer: account,
       subAccountAddress,
