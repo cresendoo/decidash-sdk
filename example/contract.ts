@@ -1,5 +1,6 @@
 import {
   Account,
+  type AccountAddressInput,
   Aptos,
   AptosConfig,
   Ed25519PrivateKey,
@@ -12,11 +13,11 @@ import { config } from "dotenv";
 import { DeciDashConfig } from "../src/config";
 import {
   createNewSubAccount,
-  depositToSubAccount,
-  getAccountBalance,
+  deposit,
   getPrimarySubAccount,
+  getSubAccountBalance,
   testUSDCMint,
-  withdrawFromSubAccount,
+  withdraw,
 } from "../src/contract/account";
 
 config();
@@ -32,73 +33,78 @@ async function main() {
 
   const PRIVATE_KEY = process.env.PRIVATE_KEY as HexInput;
 
-  const account = Account.fromPrivateKey({
+  const primaryAccount = Account.fromPrivateKey({
     privateKey: new Ed25519PrivateKey(
       PrivateKey.formatPrivateKey(PRIVATE_KEY, PrivateKeyVariants.Ed25519),
     ),
   });
-  const accountAddress = account.accountAddress;
+  const accountAddress = primaryAccount.accountAddress;
+
+  const printAccountBalance = async (
+    accountAddress: AccountAddressInput,
+    subAccountAddress: AccountAddressInput,
+  ) => {
+    const primaryAccountBalance = await getSubAccountBalance({
+      aptos,
+      subAccountAddress: accountAddress,
+    });
+
+    const subAccountBalance = await getSubAccountBalance({
+      aptos,
+      subAccountAddress: subAccountAddress,
+    });
+    console.log("-------------------------------------------------");
+    console.log("Primary Account Balance:", primaryAccountBalance);
+    console.log("Sub Account Balance:", subAccountBalance);
+    console.log("-------------------------------------------------");
+  };
 
   try {
-    const result1 = await createNewSubAccount({
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
+    void (await createNewSubAccount({
       decidashConfig,
       aptos,
-      signer: account,
-    });
+      primaryAccount: primaryAccount,
+    }));
+    console.log("New Sub Account");
 
-    console.log("New Sub Account:", result1);
-
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
     const subAccountAddress = await getPrimarySubAccount({
       aptos,
-      accountAddress,
+      primaryAddress: accountAddress,
     });
-
     console.log("Primary Sub Account:", subAccountAddress);
 
-    const result2 = await testUSDCMint({
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
+    void (await testUSDCMint({
       decidashConfig,
       aptos,
-      signer: account,
+      primaryAccount: primaryAccount,
       amount: 10000, // 10000 USDC
-    });
+    }));
+    console.log("Test USDC Mint");
+    printAccountBalance(accountAddress, subAccountAddress);
 
-    console.log("Test USDC Mint:", result2);
-
-    let balance = await getAccountBalance({
-      aptos,
-      accountAddress,
-    });
-    console.log("Account Balance:", balance);
-
-    const result4 = await depositToSubAccount({
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
+    void (await deposit({
       decidashConfig,
       aptos,
-      signer: account,
+      signer: primaryAccount,
       amount: 10000, // 10000 USDC
-    });
-    console.log("Deposit to Sub Account:", result4);
+    }));
+    console.log("Deposit to Sub Account");
+    printAccountBalance(accountAddress, subAccountAddress);
 
-    balance = await getAccountBalance({
-      aptos,
-      accountAddress,
-    });
-    console.log("Account Balance:", balance);
-
-    const result5 = await withdrawFromSubAccount({
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
+    void (await withdraw({
       decidashConfig,
       aptos,
-      signer: account,
+      signer: primaryAccount,
       subAccountAddress,
       amount: 10000, // 10000 USDC
-    });
-
-    console.log("Withdraw from Sub Account:", result5);
-
-    balance = await getAccountBalance({
-      aptos,
-      accountAddress,
-    });
-    console.log("Account Balance:", balance);
+    }));
+    console.log("Withdraw from Sub Account");
+    printAccountBalance(accountAddress, subAccountAddress);
   } catch (error) {
     console.error("Error:", error);
   }

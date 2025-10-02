@@ -1,4 +1,5 @@
 import type { DeciDashConfig } from "@/config";
+import type { PostFeePayerResponse } from "./types";
 import { post } from "./utils";
 
 export const postFeePayer = async (args: {
@@ -7,7 +8,7 @@ export const postFeePayer = async (args: {
   transaction: number[];
 }) => {
   const { fetchFn, tradingVM } = args.decidashConfig;
-  const response = await post(
+  const response = await post<PostFeePayerResponse>(
     `${tradingVM.FeePayerURL}/transactions`,
     {
       signature: args.signature,

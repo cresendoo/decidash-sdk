@@ -1,3 +1,35 @@
+export type PostFeePayerResponse = {
+  hash: string;
+  sender: string;
+  sequence_number: string;
+  max_gas_amount: string;
+  gas_unit_price: string;
+  expiration_timestamp_secs: string;
+  payload: {
+    type: string;
+    function: string;
+    type_arguments: any[];
+    arguments: any[];
+  };
+  signature: {
+    type: string;
+    sender: {
+      type: string;
+      public_key: string;
+      signature: string;
+    };
+    secondary_signer_addresses: string[];
+    secondary_signers: any[];
+    fee_payer_address: string;
+    fee_payer_signer: {
+      type: string;
+      public_key: string;
+      signature: string;
+    };
+  };
+  replay_protection_: string;
+};
+
 /**
  * @description Market sentiment
  * @example
