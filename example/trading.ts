@@ -9,6 +9,7 @@ import {
   PrivateKeyVariants,
 } from "@aptos-labs/ts-sdk";
 import { config } from "dotenv";
+import { getMarkets } from "../src/api/market";
 import { DeciDashConfig } from "../src/config";
 import {
   createNewSubAccount,
@@ -17,6 +18,7 @@ import {
   testUSDCMint,
   withdraw,
 } from "../src/contract/account";
+import { placeOrderToSubaccount } from "../src/contract/trading";
 import { printAccountBalance } from "./utils";
 
 config();
@@ -40,14 +42,14 @@ async function main() {
   const accountAddress = primaryAccount.accountAddress;
 
   try {
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
+    // Get Primary Sub Account
     const subAccountAddress = await getPrimarySubAccount({
       aptos,
       primaryAddress: accountAddress,
     });
     console.log("Primary Sub Account:", subAccountAddress);
 
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
+    // Test USDC Mint
     void (await testUSDCMint({
       decidashConfig,
       aptos,
@@ -57,7 +59,7 @@ async function main() {
     console.log("Test USDC Mint");
     printAccountBalance(aptos, accountAddress, subAccountAddress);
 
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
+    // Deposit to Sub Account
     void (await deposit({
       decidashConfig,
       aptos,
@@ -67,16 +69,32 @@ async function main() {
     console.log("Deposit to Sub Account");
     printAccountBalance(aptos, accountAddress, subAccountAddress);
 
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++");
-    void (await withdraw({
+    // Get Market
+    const markets = await getMarkets({ decidashConfig });
+    const targetMarket = markets[0];
+    if (!targetMarket) {
+      console.log("⚠️ No markets returned. Exiting example.");
+      return;
+    }
+    console.log("Target Market:", targetMarket);
+
+    // Place Order
+    const result = await placeOrderToSubaccount({
       decidashConfig,
       aptos,
       signer: primaryAccount,
       subAccountAddress,
-      amount: 10000, // 10000 USDC
-    }));
-    console.log("Withdraw from Sub Account");
+      market: targetMarket,
+      price: 354,
+      size: 354,
+      isLong: true,
+      timeInForce: 1,
+      isReduceOnly: false,
+      clientOrderId: 1,
+    });
+    console.log("Place Order");
     printAccountBalance(aptos, accountAddress, subAccountAddress);
+    console.log("Order Result:", result);
   } catch (error) {
     console.error("Error:", error);
   }
