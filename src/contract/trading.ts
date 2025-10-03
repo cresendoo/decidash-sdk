@@ -6,8 +6,8 @@ import type {
   Aptos,
   CommittedTransactionResponse,
 } from "@aptos-labs/ts-sdk";
-import { buildFeepayerTxRequest } from "./aptos";
 import { DECIBEL_CONTRACT_ADDRESS } from "./const";
+import { buildFeepayerTxRequest } from "./transaction";
 import type { OrderEvent, TimeInForce } from "./types";
 
 export const placeOrderToSubaccount = async (args: {

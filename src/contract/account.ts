@@ -8,12 +8,12 @@ import type {
   Aptos,
   CommittedTransactionResponse,
 } from "@aptos-labs/ts-sdk";
-import { buildFeepayerTxRequest } from "./aptos";
 import {
   COLLECTAL_DECIMALS,
   DECIBEL_CONTRACT_ADDRESS,
   USDC_METADATA_ADDRESS,
 } from "./const";
+import { buildFeepayerTxRequest } from "./transaction";
 
 export const getPrimarySubAccount = async (args: {
   aptos: Aptos;

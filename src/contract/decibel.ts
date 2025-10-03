@@ -12,8 +12,8 @@ export type Cache = {
 export class DecibelAccount extends ContractWrapper {
   private cache: Cache;
 
-  constructor(config: DeciDashConfig, signerAccount: Account, aptos?: Aptos) {
-    super(config, signerAccount, aptos);
+  constructor(config: DeciDashConfig, delegateAccount: Account, aptos?: Aptos) {
+    super(config, delegateAccount, aptos);
     this.cache = {
       markets: [],
       lastupdated: new Date(),
