@@ -1,7 +1,8 @@
 import type { Market } from "@/api";
 import type { DeciDashConfig } from "@/config";
-import type { Account, Aptos } from "@aptos-labs/ts-sdk";
+import type { Account, AccountAuthenticator, Aptos, CommittedTransactionResponse, SimpleTransaction } from "@aptos-labs/ts-sdk";
 import { ContractWrapper } from "./contract";
+import { postFeePayer } from "@/api/feepayer";
 
 export type Cache = {
   markets: Market[];
@@ -18,5 +19,18 @@ export class DecibelAccount extends ContractWrapper {
       markets: [],
       lastupdated: new Date(),
     };
+  }
+
+  public async submitFeepayerTxRaw(
+    simpleTransaction: SimpleTransaction,
+    senderAuthenticator: AccountAuthenticator
+  ): Promise<CommittedTransactionResponse> {
+    const response = await postFeePayer({
+      decidashConfig: this.config,
+      aptos: this.aptos,
+      signature: Array.from(senderAuthenticator.bcsToBytes()),
+      transaction: Array.from(simpleTransaction.rawTransaction.bcsToBytes()),
+    });
+    return response;
   }
 }
