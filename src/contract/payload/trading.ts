@@ -77,3 +77,25 @@ export const placeTwapOrderToSubaccountPayload = (args: {
     args.twapDurationSeconds,
   ],
 });
+
+export const cancelOrderToSubaccountPayload = (args: {
+  subAccountAddress: string;
+  orderId: string;
+  marketAddress: string;
+}): InputEntryFunctionData | InputMultiSigData => ({
+  function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::cancel_order_to_subaccount`,
+  functionArguments: [args.subAccountAddress, args.orderId, args.marketAddress],
+});
+
+export const cancelClientOrderToSubaccountPayload = (args: {
+  subAccountAddress: string;
+  clientOrderId: string;
+  marketAddress: string;
+}): InputEntryFunctionData | InputMultiSigData => ({
+  function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::cancel_client_order_to_subaccount`,
+  functionArguments: [
+    args.subAccountAddress,
+    args.clientOrderId,
+    args.marketAddress,
+  ],
+});

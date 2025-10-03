@@ -10,6 +10,8 @@ import type {
 } from "@aptos-labs/ts-sdk";
 import { ContractWrapper } from "./contract";
 import {
+  cancelClientOrderToSubaccountPayload,
+  cancelOrderToSubaccountPayload,
   configureUserSettingsForMarketPayload,
   placeOrderToSubaccountPayload,
   placeTwapOrderToSubaccountPayload,
@@ -109,6 +111,29 @@ export class DecibelAccount extends ContractWrapper {
       orderId: this.extractOrderIdFromTransaction(tx, args.accountAddress),
       txhash: tx.hash,
     };
+  }
+
+  public async cancelOrder(args: {
+    accountAddress: string;
+    orderId: string;
+    marketAddress: string;
+  }): Promise<{ txhash: string }> {
+    const payload = cancelOrderToSubaccountPayload({
+      ...args,
+      subAccountAddress: args.accountAddress,
+    });
+    const tx = await this.submitFeepayerTx(payload);
+    return { txhash: tx.hash };
+  }
+
+  public async cancelClientOrder(args: {
+    accountAddress: string;
+    clientOrderId: string;
+    marketAddress: string;
+  }): Promise<{ txhash: string }> {
+    const payload = cancelClientOrderToSubaccountPayload(args);
+    const tx = await this.submitFeepayerTx(payload);
+    return { txhash: tx.hash };
   }
 
   private extractOrderIdFromTransaction = (
