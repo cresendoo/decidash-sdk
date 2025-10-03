@@ -131,7 +131,10 @@ export class DecibelAccount extends ContractWrapper {
     clientOrderId: string;
     marketAddress: string;
   }): Promise<{ txhash: string }> {
-    const payload = cancelClientOrderToSubaccountPayload(args);
+    const payload = cancelClientOrderToSubaccountPayload({
+      ...args,
+      subAccountAddress: args.accountAddress,
+    });
     const tx = await this.submitFeepayerTx(payload);
     return { txhash: tx.hash };
   }
