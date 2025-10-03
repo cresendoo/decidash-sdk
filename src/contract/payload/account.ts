@@ -1,28 +1,40 @@
+import type {
+  InputEntryFunctionData,
+  InputMultiSigData,
+} from "@aptos-labs/ts-sdk";
 import { DECIBEL_CONTRACT_ADDRESS, USDC_METADATA_ADDRESS } from "../const";
 
 export const delegateTradingToSubaccountPayload = (
   delegateAccountAddress: string,
-) => ({
+): InputEntryFunctionData | InputMultiSigData => ({
   function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::delegate_trading_to`,
   functionArguments: [delegateAccountAddress],
 });
 
-export const primarySubAccountPayload = (primaryAddress: string) => ({
+export const primarySubAccountPayload = (
+  primaryAddress: string,
+): InputEntryFunctionData | InputMultiSigData => ({
   function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::primary_subaccount`,
   functionArguments: [primaryAddress],
 });
 
-export const createSubAccountPayload = () => ({
+export const createSubAccountPayload = ():
+  | InputEntryFunctionData
+  | InputMultiSigData => ({
   function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::create_new_subaccount`,
   functionArguments: [],
 });
 
-export const getAccountBalancePayload = (accountAddress: string) => ({
+export const getAccountBalancePayload = (
+  accountAddress: string,
+): InputEntryFunctionData | InputMultiSigData => ({
   function: `${DECIBEL_CONTRACT_ADDRESS}::perp_engine::get_account_balance_fungible`,
   functionArguments: [accountAddress],
 });
 
-export const depositToSubAccountPayload = (amount: number) => ({
+export const depositToSubAccountPayload = (
+  amount: number,
+): InputEntryFunctionData | InputMultiSigData => ({
   function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::deposit_to_subaccount`,
   functionArguments: [USDC_METADATA_ADDRESS, amount],
 });
@@ -30,7 +42,7 @@ export const depositToSubAccountPayload = (amount: number) => ({
 export const depositToSubAccountAtPayload = (
   subAccountAddress: string,
   amount: number,
-) => ({
+): InputEntryFunctionData | InputMultiSigData => ({
   function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::deposit_to_subaccount_at`,
   functionArguments: [subAccountAddress, USDC_METADATA_ADDRESS, amount],
 });
@@ -38,7 +50,7 @@ export const depositToSubAccountAtPayload = (
 export const withdrawFromSubAccountPayload = (
   subAccountAddress: string,
   amount: number,
-) => ({
+): InputEntryFunctionData | InputMultiSigData => ({
   function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::withdraw_from_subaccount`,
   functionArguments: [subAccountAddress, USDC_METADATA_ADDRESS, amount],
 });

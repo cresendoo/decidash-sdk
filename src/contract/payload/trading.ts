@@ -1,5 +1,24 @@
+import type {
+  InputEntryFunctionData,
+  InputMultiSigData,
+} from "@aptos-labs/ts-sdk";
 import { DECIBEL_CONTRACT_ADDRESS } from "../const";
 import type { TimeInForce } from "../types";
+
+export const configureUserSettingsForMarketPayload = (args: {
+  subAccountAddress: string;
+  marketAddress: string;
+  isCross: boolean;
+  userLeverage: number;
+}): InputEntryFunctionData | InputMultiSigData => ({
+  function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::configure_user_settings_for_market`,
+  functionArguments: [
+    args.subAccountAddress,
+    args.marketAddress,
+    args.isCross,
+    args.userLeverage,
+  ],
+});
 
 export const placeOrderToSubaccountPayload = (args: {
   accountAddress: string;
@@ -17,7 +36,7 @@ export const placeOrderToSubaccountPayload = (args: {
   slLimitPrice?: number;
   builderAddress?: string;
   builderFee?: number;
-}) => ({
+}): InputEntryFunctionData | InputMultiSigData => ({
   function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::place_order_to_subaccount`,
   functionArguments: [
     args.accountAddress,
@@ -35,5 +54,26 @@ export const placeOrderToSubaccountPayload = (args: {
     args.slLimitPrice,
     args.builderAddress,
     args.builderFee,
+  ],
+});
+
+export const placeTwapOrderToSubaccountPayload = (args: {
+  subAccountAddress: string;
+  marketAddress: string;
+  size: number;
+  isLong: boolean;
+  isReduceOnly: boolean;
+  twapFrequencySeconds: number;
+  twapDurationSeconds: number;
+}): InputEntryFunctionData | InputMultiSigData => ({
+  function: `${DECIBEL_CONTRACT_ADDRESS}::dex_accounts::place_twap_order_to_subaccount`,
+  functionArguments: [
+    args.subAccountAddress,
+    args.marketAddress,
+    args.size,
+    args.isLong,
+    args.isReduceOnly,
+    args.twapFrequencySeconds,
+    args.twapDurationSeconds,
   ],
 });

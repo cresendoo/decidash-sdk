@@ -1,4 +1,3 @@
-import type { PostFeePayerResponse } from "@/api";
 import { postFeePayer } from "@/api/feepayer";
 import type { DeciDashConfig } from "@/config";
 import type {

@@ -18,7 +18,7 @@ import {
   testUSDCMint,
   withdraw,
 } from "../src/contract/account";
-import { placeOrderToSubaccount } from "../src/contract/trading";
+import { DecibelAccount } from "../src/contract/decibel";
 import { printAccountBalance } from "./utils";
 
 config();
@@ -79,18 +79,19 @@ async function main() {
     console.log("Target Market:", targetMarket);
 
     // Place Order
-    const result = await placeOrderToSubaccount({
+    const decibelAccount = new DecibelAccount(
       decidashConfig,
+      primaryAccount,
       aptos,
-      signer: primaryAccount,
-      subAccountAddress,
+    );
+    const result = await decibelAccount.placeOrder({
+      accountAddress: subAccountAddress,
       market: targetMarket,
       price: 354,
       size: 354,
       isLong: true,
       timeInForce: 1,
       isReduceOnly: false,
-      clientOrderId: 1,
     });
     console.log("Place Order");
     printAccountBalance(aptos, accountAddress, subAccountAddress);
